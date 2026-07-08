@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Login admin — UNIFATECIE</title>
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>🔒 Área do admin</h1>
+    <a class="admin-link" href="/">Voltar ao site</a>
+  </header>
+  <main class="admin-container">
+    <div class="card" style="max-width:360px; margin: 40px auto;">
+      <h2 style="margin-top:0;">Entrar</h2>
+      <form id="login-form" class="form-grid single">
+        <label>E-mail
+          <input type="email" id="email" required autocomplete="username" />
+        </label>
+        <label>Senha
+          <input type="password" id="password" required autocomplete="current-password" />
+        </label>
+        <button type="submit" class="btn-primary">Entrar</button>
+      </form>
+      <p id="error-msg" class="error-msg" hidden></p>
+    </div>
+  </main>
+  <script>
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const errorEl = document.getElementById('error-msg');
+      errorEl.hidden = true;
+      const res = await fetch('/admin/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      if (res.ok) {
+        window.location.href = '/admin/courses.html';
+      } else {
+        const data = await res.json().catch(() => ({}));
+        errorEl.textContent = data.error || 'Falha ao entrar.';
+        errorEl.hidden = false;
+      }
+    });
+  </script>
+</body>
+</html>

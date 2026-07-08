@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Central de Vendas — UNIFATECIE</title>
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>🎓 Central de Vendas — UNIFATECIE</h1>
+    <a class="admin-link" href="/admin/login.html">Área do admin</a>
+  </header>
+
+  <main class="container">
+    <section class="search-panel">
+      <label for="search-input">Digite o nome do curso</label>
+      <input id="search-input" type="text" placeholder="Ex: Fonoaudiologia, Pedagogia EAD..." autocomplete="off" />
+      <ul id="results-list" class="results-list"></ul>
+    </section>
+
+    <section id="result-panel" class="result-panel" hidden>
+      <div class="result-header">
+        <h2 id="result-title"></h2>
+        <button id="copy-btn" class="btn-primary">📋 Copiar texto</button>
+      </div>
+      <pre id="result-text" class="result-text"></pre>
+    </section>
+
+    <p id="empty-state" class="empty-state">Digite ao menos 2 letras para buscar um curso.</p>
+  </main>
+
+  <button id="chat-toggle" class="chat-toggle" title="Assistente de IA">💬</button>
+  <div id="chat-panel" class="chat-panel" hidden>
+    <div class="chat-header">
+      <strong>Assistente de IA</strong>
+      <button id="chat-close" class="btn-icon">✕</button>
+    </div>
+    <div id="chat-messages" class="chat-messages">
+      <div class="chat-msg chat-msg-assistant">
+        Oi! Me diga qual curso você procura (pode ser informal, tipo "fono semi" ou "pós neuro") que eu busco pra você.
+      </div>
+    </div>
+    <form id="chat-form" class="chat-form">
+      <input id="chat-input" type="text" placeholder="Digite sua pergunta..." autocomplete="off" />
+      <button type="submit" class="btn-primary">Enviar</button>
+    </form>
+  </div>
+
+  <script src="/js/search.js"></script>
+  <script src="/js/chat.js"></script>
+</body>
+</html>
