@@ -9,28 +9,28 @@ import { campanhaSegundaGraduacao, seedCoursesSegundaGraduacao } from './segunda
 const campanhaGraduacao = {
   name: 'Campanha Módulo 3/2026 - Graduação EAD',
   level: 'graduacao',
-  validUntil: '2026-08-31',
+  validUntil: '2026-07-31',
   active: true,
   discountPct: 70,
-  enrollmentFeeFrom: null,
-  enrollmentFeeTo: 49.9,
-  firstPaymentNote: '1ª mensalidade apenas para Julho!',
-  bonusText: null,
+  enrollmentFeeFrom: 49.9,
+  enrollmentFeeTo: 0,
+  firstPaymentNote: '1ª mensalidade apenas para Agosto!',
+  bonusText: '🚗 Matriculando agora você concorre a 1 carro 0KM!',
 };
 
 // Pós não tem desconto sobre valor cheio - é parcela fixa por cluster
-// (1x R$29,90 de matrícula + 12x o valor do cluster, 1ª parcela no ato).
+// (12x o valor do cluster, matrícula/anuidade definida na campanha).
 const campanhaPos = {
-  name: 'Campanha Pós-Graduação EAD - Junho/2026',
+  name: 'Campanha Pós-Graduação EAD - Julho/2026',
   level: 'pos',
-  validUntil: '2026-06-30',
+  validUntil: '2026-07-31',
   active: true,
   discountPct: null,
   installments: 12,
-  enrollmentFeeFrom: null,
-  enrollmentFeeTo: 29.9,
+  enrollmentFeeFrom: 49.9,
+  enrollmentFeeTo: 0,
   firstPaymentNote: null,
-  bonusText: null,
+  bonusText: '🚗 Matriculando agora você concorre a 1 carro 0KM!',
 };
 
 export const seedCampaigns = [campanhaGraduacao, campanhaPos, campanhaSegundaGraduacao];

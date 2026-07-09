@@ -72,15 +72,15 @@ const CURSOS_PARA_LICENCIADOS = [
 ];
 
 export const campanhaSegundaGraduacao = {
-  name: 'Processo Seletivo Portador de Diploma (2ª Graduação) - Módulo 2/2026',
+  name: 'Processo Seletivo Portador de Diploma (2ª Graduação) - Módulo 3/2026',
   level: 'segunda_graduacao',
-  validUntil: '2026-05-31',
+  validUntil: '2026-07-31',
   active: true,
-  discountPct: 66,
-  enrollmentFeeFrom: null,
-  enrollmentFeeTo: 49.9,
-  firstPaymentNote: '1ª mensalidade apenas para Julho!',
-  bonusText: null,
+  discountPct: 70,
+  enrollmentFeeFrom: 49.9,
+  enrollmentFeeTo: 0,
+  firstPaymentNote: '1ª mensalidade apenas para Agosto!',
+  bonusText: '🚗 Matriculando agora você concorre a 1 carro 0KM!',
 };
 
 // "Nome do diploma anterior|duração" - um por linha.
