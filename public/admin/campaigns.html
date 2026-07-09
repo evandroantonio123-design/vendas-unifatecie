@@ -28,6 +28,12 @@
         <label>Nome da campanha
           <input type="text" id="name" placeholder="Ex: Campanha de Junho" required />
         </label>
+        <label>Nível (aplica só a cursos desse nível)
+          <select id="level" required>
+            <option value="graduacao">Graduação</option>
+            <option value="pos">Pós-graduação</option>
+          </select>
+        </label>
         <label>Válida até
           <input type="date" id="validUntil" />
         </label>
@@ -62,7 +68,7 @@
       <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>Nome</th><th>Desconto</th><th>Válida até</th><th>Status</th><th></th></tr>
+          <tr><th>Nome</th><th>Nível</th><th>Desconto</th><th>Válida até</th><th>Status</th><th></th></tr>
         </thead>
         <tbody id="campaigns-tbody"></tbody>
       </table>
@@ -73,6 +79,7 @@
   <script src="/js/admin.js"></script>
   <script>
     let campaigns = [];
+    const levelLabel = { graduacao: 'Graduação', pos: 'Pós-graduação' };
 
     function fmtDate(iso) {
       if (!iso) return '—';
@@ -88,6 +95,7 @@
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${c.name}</td>
+          <td>${levelLabel[c.level] || c.level}</td>
           <td>${c.discountPct != null ? c.discountPct + '%' : '—'}</td>
           <td>${fmtDate(c.validUntil)}</td>
           <td><span class="tag">${c.active ? 'Ativa' : 'Inativa'}</span></td>
@@ -112,6 +120,7 @@
       document.getElementById('form-title').textContent = `Editando: ${c.name}`;
       document.getElementById('campaign-id').value = c.id;
       document.getElementById('name').value = c.name;
+      document.getElementById('level').value = c.level;
       document.getElementById('validUntil').value = c.validUntil || '';
       document.getElementById('discountPct').value = c.discountPct ?? '';
       document.getElementById('enrollmentFeeFrom').value = c.enrollmentFeeFrom ?? '';
@@ -147,6 +156,7 @@
       const numOrNull = (v) => (v === '' ? null : Number(v));
       const payload = {
         name: document.getElementById('name').value,
+        level: document.getElementById('level').value,
         validUntil: document.getElementById('validUntil').value || null,
         discountPct: numOrNull(document.getElementById('discountPct').value),
         enrollmentFeeFrom: numOrNull(document.getElementById('enrollmentFeeFrom').value),

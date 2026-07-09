@@ -72,6 +72,7 @@ export async function createCampaign(input) {
   const campaign = {
     id: nextId('campaigns'),
     name: input.name,
+    level: input.level,
     validUntil: input.validUntil || null,
     bonusText: input.bonusText || null,
     active: input.active !== undefined ? !!input.active : true,
@@ -90,6 +91,7 @@ export async function updateCampaign(id, input) {
   if (!campaign) return null;
   Object.assign(campaign, {
     name: input.name ?? campaign.name,
+    level: input.level ?? campaign.level,
     validUntil: input.validUntil ?? campaign.validUntil,
     bonusText: input.bonusText ?? campaign.bonusText,
     active: input.active !== undefined ? !!input.active : campaign.active,
@@ -119,7 +121,8 @@ export function getJoined(courseId, campaignId) {
 
 /**
  * Busca cursos em campanhas ativas. Todo curso com mensalidade cheia
- * cadastrada aparece automaticamente em toda campanha ativa.
+ * cadastrada aparece automaticamente em toda campanha ativa do MESMO NÍVEL
+ * (graduação só casa com campanha de graduação, pós só com campanha de pós).
  * Aceita termos parciais/informais (acento-insensitive).
  */
 export function search(query, { limit = 20 } = {}) {
@@ -130,6 +133,7 @@ export function search(query, { limit = 20 } = {}) {
   const rows = [];
   for (const campaign of activeCampaigns) {
     for (const course of courses) {
+      if (course.level !== campaign.level) continue;
       rows.push({ course, campaign });
     }
   }

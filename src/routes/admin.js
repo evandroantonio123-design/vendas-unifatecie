@@ -74,8 +74,8 @@ adminRouter.get('/api/campaigns', (req, res) => {
 });
 
 adminRouter.post('/api/campaigns', async (req, res) => {
-  const { name } = req.body || {};
-  if (!name) return res.status(400).json({ error: 'name é obrigatório.' });
+  const { name, level } = req.body || {};
+  if (!name || !level) return res.status(400).json({ error: 'name e level são obrigatórios.' });
   const campaign = await createCampaign(req.body);
   res.status(201).json(campaign);
 });

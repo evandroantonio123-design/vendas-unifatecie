@@ -1,6 +1,6 @@
 import { db } from './db.js';
 import { createCourse, createCampaign } from './repositories/courseRepository.js';
-import { seedCampaign, seedCourses } from './data/seedCatalog.js';
+import { seedCampaigns, seedCourses } from './data/seedCatalog.js';
 
 /**
  * Recarrega o catálogo base sempre que o banco estiver vazio - inclusive
@@ -10,9 +10,11 @@ import { seedCampaign, seedCourses } from './data/seedCatalog.js';
  */
 export async function seedCatalogIfEmpty() {
   if (db.data.courses.length > 0 || db.data.campaigns.length > 0) return;
-  await createCampaign(seedCampaign);
+  for (const campaign of seedCampaigns) {
+    await createCampaign(campaign);
+  }
   for (const course of seedCourses) {
     await createCourse(course);
   }
-  console.log(`Catálogo inicial carregado: ${seedCourses.length} cursos.`);
+  console.log(`Catálogo inicial carregado: ${seedCampaigns.length} campanhas, ${seedCourses.length} cursos.`);
 }

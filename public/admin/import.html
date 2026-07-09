@@ -145,6 +145,7 @@
             method: 'POST',
             body: JSON.stringify({
               name: campaignName,
+              level: document.getElementById('r-level').value,
               validUntil: document.getElementById('r-validUntil').value || null,
               bonusText: document.getElementById('r-bonusText').value || null,
               discountPct: val('r-discountPct'),

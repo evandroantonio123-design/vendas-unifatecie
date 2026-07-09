@@ -1,17 +1,35 @@
-// Catálogo carregado a partir do REGULAMENTO_CAMPANHA_2026-3_GRADUACAO_EAD_VERSAO_1.
-// Desconto de 66% confere exatamente com a coluna "valor com desconto de
-// pontualidade" do ANEXO I para todos os grupos (ex: 859,00 * 0,34 = 292,06).
+// Catálogo carregado a partir dos regulamentos oficiais:
+// - REGULAMENTO_CAMPANHA_2026-3_GRADUACAO_EAD_VERSAO_1 (graduação)
+// - REGULAMENTO_POS-GRADUACAO_EAD_2026-6_VERSAO_03 (pós-graduação)
+// Cada campanha só se aplica a cursos do mesmo "level" (graduacao/pos).
 
-export const seedCampaign = {
+const campanhaGraduacao = {
   name: 'Campanha Módulo 3/2026 - Graduação EAD',
+  level: 'graduacao',
   validUntil: '2026-08-31',
   active: true,
-  discountPct: 66,
+  discountPct: 70,
   enrollmentFeeFrom: null,
   enrollmentFeeTo: 49.9,
   firstPaymentNote: '1ª mensalidade apenas para Julho!',
   bonusText: null,
 };
+
+// Pós não tem desconto sobre valor cheio - é parcela fixa por cluster
+// (1x R$29,90 de matrícula + 12x o valor do cluster, 1ª parcela no ato).
+const campanhaPos = {
+  name: 'Campanha Pós-Graduação EAD - Junho/2026',
+  level: 'pos',
+  validUntil: '2026-06-30',
+  active: true,
+  discountPct: null,
+  enrollmentFeeFrom: null,
+  enrollmentFeeTo: 29.9,
+  firstPaymentNote: null,
+  bonusText: null,
+};
+
+export const seedCampaigns = [campanhaGraduacao, campanhaPos];
 
 const EAD = 'EAD';
 const SEMI = 'Semi-presencial';
@@ -109,10 +127,187 @@ const RAW_COURSES = [
   ['Terapia Ocupacional', SEMI, '4 anos', 859.0],
 ];
 
-export const seedCourses = RAW_COURSES.map(([name, modality, duration, priceFull]) => ({
+const seedCoursesGraduacao = RAW_COURSES.map(([name, modality, duration, priceFull]) => ({
   name,
   level: 'graduacao',
   modality,
   duration,
   priceFull,
 }));
+
+// [nome, duração, mensalidade do cluster]
+const EDUCACAO = 29.9;
+const GESTAO_NEGOCIOS = 47.9;
+const ENGENHARIA_ARQUITETURA = 47.9;
+const DIREITO = 47.9;
+const SAUDE_BEMESTAR = 57.9;
+const INOVACAO_IA = 57.9;
+
+const RAW_COURSES_POS = [
+  // Cluster Educação - R$29,90/mês (44 cursos)
+  ['Especialização em Alfabetização e Letramento', '4 meses', EDUCACAO],
+  ['Especialização em Aprendizagem Contínua: Metodologia do Ensino de História para Professores', '3 meses', EDUCACAO],
+  ['Especialização em Aprendizagem Organizacional', '4 meses', EDUCACAO],
+  ['Especialização em Artes e Ludicidade', '4 meses', EDUCACAO],
+  ['Especialização em Atendimento Educacional Especializado – AEE', '3 meses', EDUCACAO],
+  ['Especialização em Biblioteconomia e Gestão de Bibliotecas', '3 meses', EDUCACAO],
+  ['Especialização em Didática e Metodologia do Ensino Básico e Superior', '4 meses', EDUCACAO],
+  ['Especialização em EAD e Novas Tecnologias Educacionais', '4 meses', EDUCACAO],
+  ['Especialização em Educação 5.0: Metodologias e Tecnologias Inovadoras', '4 meses', EDUCACAO],
+  ['Especialização em Educação de Jovens e Adultos', '4 meses', EDUCACAO],
+  ['Especialização em Educação Digital e Inovação Pedagógica', '3 meses', EDUCACAO],
+  ['Especialização em Educação do Campo', '4 meses', EDUCACAO],
+  ['Especialização em Educação do Futuro', '5 meses', EDUCACAO],
+  ['Especialização em Educação Especial (Atendimento às Necessidades Especiais)', '4 meses', EDUCACAO],
+  ['Especialização em Educação Especial e Inclusiva – Neuropedagogia e Psicomotricidade', '4 meses', EDUCACAO],
+  ['Especialização em Educação Física e Psicomotricidade', '3 meses', EDUCACAO],
+  ['Especialização em Educação Física Escolar', '3 meses', EDUCACAO],
+  ['Especialização em Educação Física, Abordagens Pedagógicas', '4 meses', EDUCACAO],
+  ['Especialização em Educação Infantil', '4 meses', EDUCACAO],
+  ['Especialização em Educação Infantil e Alfabetização', '4 meses', EDUCACAO],
+  ['Especialização em Ensino de Inglês', '4 meses', EDUCACAO],
+  ['Especialização em Ensino Religioso', '4 meses', EDUCACAO],
+  ['Especialização em Filosofia: Tradições e Reflexões', '4 meses', EDUCACAO],
+  ['Especialização em Gestão da Aprendizagem e Inovação Tecnológica na Educação', '4 meses', EDUCACAO],
+  ['Especialização em Gestão Escolar', '4 meses', EDUCACAO],
+  ['Especialização em Literatura Brasileira e Internacional', '4 meses', EDUCACAO],
+  ['Especialização em Literatura e Cultura', '3 meses', EDUCACAO],
+  ['Especialização em Ludopedagogia', '3 meses', EDUCACAO],
+  ['Especialização em Língua Portuguesa: Redação Avançada', '3 meses', EDUCACAO],
+  ['Especialização em Mediação para o Ensino a Distância: InovaEducação', '3 meses', EDUCACAO],
+  ['Especialização em Metodologia do Ensino de Biologia e Ciências', '3 meses', EDUCACAO],
+  ['Especialização em Metodologia do Ensino de Geografia', '3 meses', EDUCACAO],
+  ['Especialização em Metodologia do Ensino de Matemática', '3 meses', EDUCACAO],
+  ['Especialização em Neuroaprendizagem', '4 meses', EDUCACAO],
+  ['Especialização em Neuropsicologia Educacional', '4 meses', EDUCACAO],
+  ['Especialização em Pedagogia e Inclusão: Educação Especial', '5 meses', EDUCACAO],
+  ['Especialização em Psicopedagogia e Práticas Educacionais', '4 meses', EDUCACAO],
+  ['Especialização em Psicopedagogia Institucional e Clínica', '7 meses', EDUCACAO],
+  ['Especialização em Sociologia da Educação', '4 meses', EDUCACAO],
+  ['Especialização em Teologia Cristã e Estudos Bíblicos Avançados', '4 meses', EDUCACAO],
+  ['Especialização em Terapia Ocupacional com Ênfase em Educação Especial e Inclusiva', '6 meses', EDUCACAO],
+  ['Especialização em Transtorno do Espectro Autista – TEA', '9 meses', EDUCACAO],
+  ['MBA em Ciências da Computação para Licenciados', '4 meses', EDUCACAO],
+  ['MBA em Educação Executiva', '4 meses', EDUCACAO],
+  // Cluster Gestão e Negócios - R$47,90/mês (58 cursos)
+  ['Especialização em Agricultura e Manejo Sustentável', '5 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Auditoria, Contabilidade e Perícia Contábil', '5 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Comunicação e Liderança: Gestão Estratégica', '3 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Comunicação e Mídias Digitais', '5 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Comércio Global 360: Marketing Internacional e Negócios Internacionais', '4 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Controladoria e Custos', '5 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Criação e Desenvolvimento de Produtos', '3 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Desenvolvimento Pessoal e Gestão de Carreira', '4 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Design Criativo', '5 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Empreendedorismo e Inovação', '3 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Estratégias Transformadoras em Políticas Públicas e Gestão Social', '4 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Finanças Integradas, Corporativas e Públicas', '5 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Future Thinking: Pensamento e Estudos do Futuro', '5 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Gastronomia: Nutrição Humana e Educação Alimentar', '4 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Gestão Comercial e Vendas', '5 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Gestão da Tecnologia da Informação', '5 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Gestão de Conflitos e Desenvolvimento Organizacional', '4 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Gestão de Cooperativas de Crédito', '5 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Gestão de Logística e Operações', '5 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Gestão de Pessoas e Desenvolvimento Humano', '5 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Gestão de Unidades de Conservação', '4 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Gestão do Agronegócio', '5 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Gestão e Qualidade em Saúde Pública', '4 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Gestão Empresarial', '5 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Gestão Estratégica de Pessoas', '5 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Gestão Estratégica de Projetos', '5 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Gestão Financeira', '5 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Gestão Pública', '5 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Liderança Corporativa', '4 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Liderança de Projetos e Inovação Estratégica', '4 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Marketing Digital', '5 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Negócios Imobiliários', '5 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Planejamento Urbano e Cidades Sustentáveis', '4 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Segurança e Eficiência na Produção: Gestão de Riscos', '4 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Serviços Sociais e Liderança: Projetos Sociais Sustentáveis', '3 meses', GESTAO_NEGOCIOS],
+  ['Especialização em Storytelling Digital: Produção de Narrativas Cativantes para Redes Sociais', '3 meses', GESTAO_NEGOCIOS],
+  ['Especialização Master em Gestão Social e Políticas Públicas', '3 meses', GESTAO_NEGOCIOS],
+  ['Especialização Master em Marketing e Inteligência de Mercado', '3 meses', GESTAO_NEGOCIOS],
+  ['MBA em Gestão Ambiental e Futuro Sustentável', '4 meses', GESTAO_NEGOCIOS],
+  ['MBA em Gestão Avançada e Liderança Transformadora', '4 meses', GESTAO_NEGOCIOS],
+  ['MBA em Gestão Contábil e Auditoria Avançada', '4 meses', GESTAO_NEGOCIOS],
+  ['MBA em Gestão da Qualidade e Auditoria', '4 meses', GESTAO_NEGOCIOS],
+  ['MBA em Gestão da Qualidade e Processos Industriais', '4 meses', GESTAO_NEGOCIOS],
+  ['MBA em Gestão de Marcas e Produtos', '4 meses', GESTAO_NEGOCIOS],
+  ['MBA em Gestão de Operações e Supply Chain', '4 meses', GESTAO_NEGOCIOS],
+  ['MBA em Gestão de Pessoas 5.0', '4 meses', GESTAO_NEGOCIOS],
+  ['MBA em Gestão de Projetos e Inovação', '4 meses', GESTAO_NEGOCIOS],
+  ['MBA em Gestão de Projetos e Processos', '4 meses', GESTAO_NEGOCIOS],
+  ['MBA em Gestão de Projetos em TI', '4 meses', GESTAO_NEGOCIOS],
+  ['MBA em Gestão de Vendas e Marketing', '4 meses', GESTAO_NEGOCIOS],
+  ['MBA em Gestão de Vendas e Negócios', '4 meses', GESTAO_NEGOCIOS],
+  ['MBA em Gestão Estratégica de Comércio Exterior', '3 meses', GESTAO_NEGOCIOS],
+  ['MBA em Gestão Estratégica de Custos', '4 meses', GESTAO_NEGOCIOS],
+  ['MBA em Gestão Estratégica e Marketing Digital', '4 meses', GESTAO_NEGOCIOS],
+  ['MBA em Marketing Digital e E-commerce', '4 meses', GESTAO_NEGOCIOS],
+  ['MBA em Marketing Digital e Negócios Disruptivos', '4 meses', GESTAO_NEGOCIOS],
+  ['MBA em Marketing Imobiliário', '4 meses', GESTAO_NEGOCIOS],
+  ['MBA Executivo em Contabilidade e Finanças Corporativas', '4 meses', GESTAO_NEGOCIOS],
+  // Cluster Engenharia e Arquitetura - R$47,90/mês, exceto exceção abaixo (10 cursos únicos)
+  ['Especialização em Arquitetura e Urbanismo', '6 meses', ENGENHARIA_ARQUITETURA],
+  ['Especialização em Construções Verdes: Sustentabilidade e Responsabilidade Ambiental', '4 meses', ENGENHARIA_ARQUITETURA],
+  ['Especialização em Engenharia de Segurança do Trabalho', '6 meses', 149.9],
+  ['Especialização em Engenharia de Software', '4 meses', ENGENHARIA_ARQUITETURA],
+  ['Especialização em Engenharia de Software e Segurança da Informação', '4 meses', ENGENHARIA_ARQUITETURA],
+  ['Especialização em Gerenciamento de Obras', '6 meses', ENGENHARIA_ARQUITETURA],
+  ['Especialização em Química Ambiental', '5 meses', ENGENHARIA_ARQUITETURA],
+  ['Especialização em Segurança Contra Incêndio e Pânico', '6 meses', ENGENHARIA_ARQUITETURA],
+  ['Especialização em Solos e Nutrição de Plantas', '4 meses', ENGENHARIA_ARQUITETURA],
+  ['MBA em Gestão da Produção Industrial', '6 meses', ENGENHARIA_ARQUITETURA],
+  // Cluster Direito - R$47,90/mês (8 cursos)
+  ['Especialização em Direito Constitucional', '4 meses', DIREITO],
+  ['Especialização em Direito Constitucional e Prática Trabalhista', '5 meses', DIREITO],
+  ['Especialização em Direito do Trabalho e Previdenciário', '5 meses', DIREITO],
+  ['Especialização em Direito Penal', '3 meses', DIREITO],
+  ['Especialização em Direito Tributário e Direito Empresarial', '5 meses', DIREITO],
+  ['Especialização em Direito, Psicologia e Gestão de Conflitos Laborais', '5 meses', DIREITO],
+  ['Especialização em Saúde Ocupacional e Direito do Trabalho', '5 meses', DIREITO],
+  ['Especialização em Segurança Pública', '5 meses', DIREITO],
+  // Cluster Saúde e Bem-Estar - R$57,90/mês (20 cursos)
+  ['Especialização em Administração Hospitalar e Serviços de Saúde', '5 meses', SAUDE_BEMESTAR],
+  ['Especialização em Auditoria em Saúde', '5 meses', SAUDE_BEMESTAR],
+  ['Especialização em Biociência Avançada: Tecnologias Biológicas', '5 meses', SAUDE_BEMESTAR],
+  ['Especialização em Cuidados Avançados: Pré e Pós-Operatório em Estética Facial e Corporal', '5 meses', SAUDE_BEMESTAR],
+  ['Especialização em Diagnóstico Avançado: Análises Clínicas e Laboratoriais', '5 meses', SAUDE_BEMESTAR],
+  ['Especialização em Enfermagem do Trabalho', '5 meses', SAUDE_BEMESTAR],
+  ['Especialização em Envelhecimento Saudável: Prevenção, Tratamento e Cuidado', '3 meses', SAUDE_BEMESTAR],
+  ['Especialização em Gestão Hospitalar', '5 meses', SAUDE_BEMESTAR],
+  ['Especialização em Gestão Integrada: Segurança e Saúde Ocupacional no Ambiente Corporativo', '4 meses', SAUDE_BEMESTAR],
+  ['Especialização em Iniciação e Treinamento em Lutas', '4 meses', SAUDE_BEMESTAR],
+  ['Especialização em Nutrição Clínica e Dietética', '4 meses', SAUDE_BEMESTAR],
+  ['Especialização em Personal Trainer', '3 meses', SAUDE_BEMESTAR],
+  ['Especialização em Procedimentos Injetáveis', '5 meses', SAUDE_BEMESTAR],
+  ['Especialização em Psicologia Clínica e Saúde Mental', '5 meses', SAUDE_BEMESTAR],
+  ['Especialização em Psicologia Organizacional', '5 meses', SAUDE_BEMESTAR],
+  ['Especialização em Saúde Ocupacional: Ginástica Laboral, Ergonomia e Performance no Ambiente de Trabalho', '4 meses', SAUDE_BEMESTAR],
+  ['Especialização em Saúde Pública', '5 meses', SAUDE_BEMESTAR],
+  ['Especialização em Serviço Social e Políticas Públicas com Ênfase em Saúde', '3 meses', SAUDE_BEMESTAR],
+  ['Especialização em Treinamento Resistido e Aeróbio', '3 meses', SAUDE_BEMESTAR],
+  ['Especialização em Zoologia', '4 meses', SAUDE_BEMESTAR],
+  // Cluster Inovação (IA) - R$57,90/mês (10 cursos)
+  ['Especialização em Inteligência Artificial e Ciência de Dados', '4 meses', INOVACAO_IA],
+  ['Especialização em Inteligência Artificial Generativa: Inovação, Automação e Produtividade', '4 meses', INOVACAO_IA],
+  ['Especialização em Inteligência Artificial na Educação', '4 meses', INOVACAO_IA],
+  ['Especialização em Letramento Digital e Inteligência Artificial na Educação', '4 meses', INOVACAO_IA],
+  ['MBA em Inbound Marketing com Ênfase em IA: Atração de Leads e Conversão', '4 meses', INOVACAO_IA],
+  ['MBA em Inteligência Artificial e Automação de Negócios: IA e Business Intelligence', '4 meses', INOVACAO_IA],
+  ['MBA em Liderança para o Futuro: Transformação Digital e Inteligência Artificial', '4 meses', INOVACAO_IA],
+  ['MBA em Marketing Digital com Ênfase em Inteligência Artificial', '4 meses', INOVACAO_IA],
+  ['MBA Executivo em Inteligência Artificial: Gestão Estratégica na Era da IA', '4 meses', INOVACAO_IA],
+  ['MBA em Marketing de Influência e Produção de Conteúdos Digitais com Recursos de IA', '4 meses', INOVACAO_IA],
+];
+
+const seedCoursesPos = RAW_COURSES_POS.map(([name, duration, priceFull]) => ({
+  name,
+  level: 'pos',
+  modality: EAD,
+  duration,
+  priceFull,
+}));
+
+export const seedCourses = [...seedCoursesGraduacao, ...seedCoursesPos];
