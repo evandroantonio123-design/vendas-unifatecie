@@ -32,6 +32,7 @@
           <select id="level" required>
             <option value="graduacao">Graduação</option>
             <option value="pos">Pós-graduação</option>
+            <option value="segunda_graduacao">2ª Graduação (Portador de Diploma)</option>
           </select>
         </label>
         <label>Válida até
@@ -82,7 +83,7 @@
   <script src="/js/admin.js"></script>
   <script>
     let campaigns = [];
-    const levelLabel = { graduacao: 'Graduação', pos: 'Pós-graduação' };
+    const levelLabel = { graduacao: 'Graduação', pos: 'Pós-graduação', segunda_graduacao: '2ª Graduação' };
 
     function fmtDate(iso) {
       if (!iso) return '—';

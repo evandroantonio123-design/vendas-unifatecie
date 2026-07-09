@@ -28,6 +28,9 @@ export async function createCourse(input) {
     modality: input.modality,
     duration: input.duration,
     priceFull: input.priceFull ?? null,
+    // Só usado por cursos de 2ª graduação (portador de diploma): lista de
+    // diplomas anteriores aceitos e o tempo de aproveitamento para cada um.
+    prerequisites: input.prerequisites ?? null,
     createdAt: now,
     updatedAt: now,
   };
@@ -45,6 +48,7 @@ export async function updateCourse(id, input) {
     modality: input.modality ?? course.modality,
     duration: input.duration ?? course.duration,
     priceFull: input.priceFull !== undefined ? input.priceFull : course.priceFull,
+    prerequisites: input.prerequisites !== undefined ? input.prerequisites : course.prerequisites,
     updatedAt: new Date().toISOString(),
   });
   await db.write();
@@ -156,6 +160,22 @@ export function search(query, { limit = 20 } = {}) {
   });
 
   return matches.slice(0, limit);
+}
+
+/**
+ * Busca cursos de 2ª graduação (portador de diploma) pelo nome e retorna
+ * sua lista de pré-requisitos (diploma anterior aceito + tempo de
+ * aproveitamento). Usado pela ferramenta get_prerequisites do chat.
+ */
+export function findPrerequisitesByCourseName(courseName) {
+  const q = normalize(courseName).trim();
+  const matches = db.data.courses.filter(
+    (c) => c.level === 'segunda_graduacao' && normalize(c.name).includes(q)
+  );
+  return matches.map((c) => ({
+    course: c.name,
+    prerequisites: c.prerequisites || [],
+  }));
 }
 
 // ---- admin users ----

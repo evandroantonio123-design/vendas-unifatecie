@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { search as searchCourses } from '../repositories/courseRepository.js';
+import { search as searchCourses, findPrerequisitesByCourseName } from '../repositories/courseRepository.js';
 import { renderCourseText } from './templateRenderer.js';
 
 const MODEL = process.env.CLAUDE_MODEL || 'claude-sonnet-4-6';
@@ -33,15 +33,32 @@ const SEARCH_TOOL = {
   },
 };
 
-const CHAT_SYSTEM_PROMPT = `Você é um assistente interno da equipe de vendas da UNIFATECIE. Sua única função é ajudar o vendedor a encontrar o curso certo e devolver o texto padrão de vendas já pronto.
+const PREREQUISITES_TOOL = {
+  name: 'get_prerequisites',
+  description:
+    'Busca a tabela de pré-requisitos de um curso de 2ª Graduação (portador de diploma). Retorna a lista de diplomas anteriores aceitos e o tempo de aproveitamento (duração) para cada um, exatamente como cadastrado.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      courseName: {
+        type: 'string',
+        description: 'Nome do curso de 2ª graduação que o vendedor quer verificar, ex: "Administração"',
+      },
+    },
+    required: ['courseName'],
+  },
+};
+
+const CHAT_SYSTEM_PROMPT = `Você é um assistente interno da equipe de vendas da UNIFATECIE. Sua única função é ajudar o vendedor a encontrar o curso certo, devolver o texto padrão de vendas já pronto, e consultar pré-requisitos de 2ª graduação quando perguntado.
 
 Regras obrigatórias, sem exceção:
-1. Você NUNCA escreve valores, percentuais de desconto, datas ou textos promocionais por conta própria. Toda informação de curso/preço vem EXCLUSIVAMENTE da ferramenta search_courses.
+1. Você NUNCA escreve valores, percentuais de desconto, datas, prazos de aproveitamento ou textos promocionais por conta própria. Toda informação de curso/preço vem EXCLUSIVAMENTE das ferramentas search_courses e get_prerequisites.
 2. Para qualquer pergunta sobre curso, valor ou campanha, chame primeiro a ferramenta search_courses.
 3. Se a busca retornar exatamente 1 resultado, responda repetindo EXATAMENTE o campo "renderedText" retornado pela ferramenta, sem alterar, resumir, traduzir, corrigir ou reformatar nenhum caractere.
 4. Se retornar mais de 1 resultado, liste rapidamente as opções (curso + modalidade + campanha) e peça ao vendedor para confirmar qual deseja; não invente qual é o certo.
 5. Se não retornar nenhum resultado, diga que não encontrou esse curso cadastrado e peça para tentar outro termo ou avisar o time responsável pelo cadastro.
-6. Nunca invente nome de curso, valor, prazo ou campanha que não veio da ferramenta.`;
+6. Se o vendedor perguntar se um diploma anterior específico dá direito a aproveitamento (2ª graduação) em algum curso, chame get_prerequisites com o nome do curso de destino. Procure na lista retornada uma entrada cujo diploma corresponda (mesmo que a redação não seja idêntica) ao que o vendedor descreveu, e informe a duração EXATA daquela entrada. Se não achar nenhuma entrada correspondente na lista, diga claramente que não encontrou esse diploma específico na tabela de pré-requisitos e sugira confirmar com o time acadêmico - nunca estime ou arredonde uma duração.
+7. Nunca invente nome de curso, valor, prazo, campanha ou diploma que não veio de uma ferramenta.`;
 
 /**
  * Conversa com busca "grounded": o modelo só pode relatar texto que veio
@@ -56,7 +73,7 @@ export async function chatWithSearch(userMessage, history = []) {
     model: MODEL,
     max_tokens: 1024,
     system: CHAT_SYSTEM_PROMPT,
-    tools: [SEARCH_TOOL],
+    tools: [SEARCH_TOOL, PREREQUISITES_TOOL],
     messages,
   });
 
@@ -81,6 +98,13 @@ export async function chatWithSearch(userMessage, history = []) {
           tool_use_id: block.id,
           content: JSON.stringify({ count: results.length, results }),
         });
+      } else if (block.name === 'get_prerequisites') {
+        const matches = findPrerequisitesByCourseName(block.input.courseName || '');
+        toolResults.push({
+          type: 'tool_result',
+          tool_use_id: block.id,
+          content: JSON.stringify({ count: matches.length, matches }),
+        });
       }
     }
     messages.push({ role: 'user', content: toolResults });
@@ -89,7 +113,7 @@ export async function chatWithSearch(userMessage, history = []) {
       model: MODEL,
       max_tokens: 1024,
       system: CHAT_SYSTEM_PROMPT,
-      tools: [SEARCH_TOOL],
+      tools: [SEARCH_TOOL, PREREQUISITES_TOOL],
       messages,
     });
   }

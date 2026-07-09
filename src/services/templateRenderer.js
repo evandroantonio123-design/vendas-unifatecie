@@ -33,7 +33,9 @@ export function renderCourseText({ course, campaign }) {
   const lines = [];
 
   lines.push(`🎓 Curso de ${course.name} (${course.modality})`);
-  lines.push(`🚀 Duração: ${course.duration}`);
+  if (course.duration) {
+    lines.push(`🚀 Duração: ${course.duration}`);
+  }
 
   const priceFullFmt = formatCurrency(course.priceFull);
   const discountedPrice = computeDiscountedPrice(course.priceFull, campaign.discountPct);

@@ -1,7 +1,10 @@
 // Catálogo carregado a partir dos regulamentos oficiais:
 // - REGULAMENTO_CAMPANHA_2026-3_GRADUACAO_EAD_VERSAO_1 (graduação)
 // - REGULAMENTO_POS-GRADUACAO_EAD_2026-6_VERSAO_03 (pós-graduação)
-// Cada campanha só se aplica a cursos do mesmo "level" (graduacao/pos).
+// - REGULAMENTO_CAMPANHA_2026-2_PORTADOR_DE_DIPLOMA_EAD_VERSAO_7 (2ª graduação)
+// Cada campanha só se aplica a cursos do mesmo "level" (graduacao/pos/segunda_graduacao).
+
+import { campanhaSegundaGraduacao, seedCoursesSegundaGraduacao } from './segundaGraduacao.js';
 
 const campanhaGraduacao = {
   name: 'Campanha Módulo 3/2026 - Graduação EAD',
@@ -30,7 +33,7 @@ const campanhaPos = {
   bonusText: null,
 };
 
-export const seedCampaigns = [campanhaGraduacao, campanhaPos];
+export const seedCampaigns = [campanhaGraduacao, campanhaPos, campanhaSegundaGraduacao];
 
 const EAD = 'EAD';
 const SEMI = 'Semi-presencial';
@@ -311,4 +314,4 @@ const seedCoursesPos = RAW_COURSES_POS.map(([name, duration, priceFull]) => ({
   priceFull,
 }));
 
-export const seedCourses = [...seedCoursesGraduacao, ...seedCoursesPos];
+export const seedCourses = [...seedCoursesGraduacao, ...seedCoursesPos, ...seedCoursesSegundaGraduacao];

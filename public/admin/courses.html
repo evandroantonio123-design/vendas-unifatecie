@@ -32,6 +32,7 @@
           <select id="level" required>
             <option value="graduacao">Graduação</option>
             <option value="pos">Pós-graduação</option>
+            <option value="segunda_graduacao">2ª Graduação (Portador de Diploma)</option>
           </select>
         </label>
         <label>Modalidade
@@ -67,7 +68,7 @@
   <script src="/js/admin.js"></script>
   <script>
     let courses = [];
-    const levelLabel = { graduacao: 'Graduação', pos: 'Pós-graduação' };
+    const levelLabel = { graduacao: 'Graduação', pos: 'Pós-graduação', segunda_graduacao: '2ª Graduação' };
     const currencyFmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
     async function loadAll() {
