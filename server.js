@@ -7,6 +7,7 @@ import bcrypt from 'bcryptjs';
 
 import { db } from './src/db.js';
 import { createAdminUser } from './src/repositories/courseRepository.js';
+import { seedCatalogIfEmpty } from './src/bootstrap.js';
 import { apiRouter } from './src/routes/api.js';
 import { adminRouter } from './src/routes/admin.js';
 
@@ -28,6 +29,7 @@ async function ensureAdminSeed() {
 }
 
 await ensureAdminSeed();
+await seedCatalogIfEmpty();
 
 const app = express();
 app.use(express.json());

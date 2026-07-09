@@ -1,0 +1,118 @@
+// Catálogo carregado a partir do REGULAMENTO_CAMPANHA_2026-3_GRADUACAO_EAD_VERSAO_1.
+// Desconto de 66% confere exatamente com a coluna "valor com desconto de
+// pontualidade" do ANEXO I para todos os grupos (ex: 859,00 * 0,34 = 292,06).
+
+export const seedCampaign = {
+  name: 'Campanha Módulo 3/2026 - Graduação EAD',
+  validUntil: '2026-08-31',
+  active: true,
+  discountPct: 66,
+  enrollmentFeeFrom: null,
+  enrollmentFeeTo: 49.9,
+  firstPaymentNote: '1ª mensalidade apenas para Julho!',
+  bonusText: null,
+};
+
+const EAD = 'EAD';
+const SEMI = 'Semi-presencial';
+
+// [nome, modalidade, duração, mensalidade cheia do grupo]
+const RAW_COURSES = [
+  // Grupo BASE - R$225,00
+  ['Design de Produto', EAD, '1,5 anos', 225.0],
+  ['Jogos Digitais', EAD, '2 anos', 225.0],
+  ['Produção Publicitária', EAD, '1,5 anos', 225.0],
+  ['Segurança no Trânsito', EAD, '1,5 anos', 225.0],
+  // Grupo 01 - R$299,00
+  ['Ciências Econômicas', EAD, '3 anos', 299.0],
+  ['Processos Escolares', SEMI, '2 anos', 299.0],
+  ['Teologia', EAD, '3 anos', 299.0],
+  // Grupo 02 - R$330,00
+  ['Artes', SEMI, '4 anos', 330.0],
+  ['Administração', EAD, '3 anos', 330.0],
+  ['Artes Visuais', EAD, '3 anos', 330.0],
+  ['Análise e Desenvolvimento de Sistemas', EAD, '2 anos', 330.0],
+  ['Biblioteconomia', EAD, '3 anos', 330.0],
+  ['Ciências Biológicas (Bacharelado)', SEMI, '4 anos', 330.0],
+  ['Ciências Biológicas (Licenciatura)', SEMI, '4 anos', 330.0],
+  ['Ciências Contábeis', EAD, '3 anos', 330.0],
+  ['Ciência do Futuro', EAD, '1,5 anos', 330.0],
+  ['Comércio Exterior', EAD, '1,5 anos', 330.0],
+  ['Design de Interiores', EAD, '1,5 anos', 330.0],
+  ['Design de Moda', EAD, '1,5 anos', 330.0],
+  ['Design Gráfico', EAD, '1,5 anos', 330.0],
+  ['Educação Especial', SEMI, '4 anos', 330.0],
+  ['Educação Física (Bacharelado)', SEMI, '4 anos', 330.0],
+  ['Educação Física (Licenciatura)', SEMI, '4 anos', 330.0],
+  ['Filosofia', SEMI, '4 anos', 330.0],
+  ['Gastronomia', EAD, '1,5 anos', 330.0],
+  ['Gestão Ambiental', SEMI, '2 anos', 330.0],
+  ['Gestão Comercial', EAD, '1,5 anos', 330.0],
+  ['Geografia', SEMI, '4 anos', 330.0],
+  ['História', SEMI, '4 anos', 330.0],
+  ['Letras (Português/Inglês)', SEMI, '4 anos', 330.0],
+  ['Letras (Português/Libras)', SEMI, '4 anos', 330.0],
+  ['Matemática', SEMI, '4 anos', 330.0],
+  ['Música', SEMI, '4 anos', 330.0],
+  ['Química', SEMI, '3,5 anos', 330.0],
+  ['Gestão da Qualidade', EAD, '1,5 anos', 330.0],
+  ['Gestão de Produção Industrial', EAD, '2,5 anos', 330.0],
+  ['Gestão de Recursos Humanos', EAD, '1,5 anos', 330.0],
+  ['Gestão de Segurança Privada', EAD, '1,5 anos', 330.0],
+  ['Gestão do Agronegócio', EAD, '2,5 anos', 330.0],
+  ['Gestão Financeira', EAD, '1,5 anos', 330.0],
+  ['Gestão Hospitalar', EAD, '3 anos', 330.0],
+  ['Gestão Pública', EAD, '1,5 anos', 330.0],
+  ['Hotelaria', EAD, '1,5 anos', 330.0],
+  ['Investigação Forense e Perícia Criminal', EAD, '3 anos', 330.0],
+  ['Jornalismo', EAD, '4 anos', 330.0],
+  ['Logística', EAD, '1,5 anos', 330.0],
+  ['Marketing', EAD, '1,5 anos', 330.0],
+  ['Negócios Imobiliários', EAD, '1,5 anos', 330.0],
+  ['Pedagogia', SEMI, '4 anos', 330.0],
+  ['Segurança da Informação', EAD, '2 anos', 330.0],
+  ['Processos Gerenciais', EAD, '1,5 anos', 330.0],
+  ['Processos Químicos', SEMI, '3 anos', 330.0],
+  ['Psicopedagogia', SEMI, '4 anos', 330.0],
+  ['Publicidade e Propaganda', EAD, '4 anos', 330.0],
+  ['Secretariado', EAD, '1,5 anos', 330.0],
+  ['Segurança do Trabalho', EAD, '2,5 anos', 330.0],
+  ['Segurança Pública', EAD, '1,5 anos', 330.0],
+  ['Serviço Social', SEMI, '4 anos', 330.0],
+  ['Sistemas de Informação', EAD, '4 anos', 330.0],
+  ['Sistemas para Internet', EAD, '2 anos', 330.0],
+  ['Sociologia', SEMI, '4 anos', 330.0],
+  ['Inteligência Artificial e Machine Learning', EAD, '2 anos', 330.0],
+  // Grupo 03 - R$499,00
+  ['Estética e Cosmética', EAD, '2,5 anos', 499.0],
+  ['Agente Comunitário', SEMI, '2,5 anos', 499.0],
+  ['Engenharia de Produção', SEMI, '5 anos', 499.0],
+  ['Engenharia Ambiental e Sanitária', SEMI, '5 anos', 499.0],
+  ['Engenharia de Software', EAD, '4 anos', 499.0],
+  ['Terapias Integrativas e Complementares', SEMI, '2,5 anos', 499.0],
+  // Grupo 04 - R$799,00
+  ['Arquitetura e Urbanismo', SEMI, '5 anos', 799.0],
+  ['Engenharia Agronômica (Agronomia)', SEMI, '5 anos', 799.0],
+  ['Engenharia Civil', SEMI, '5 anos', 799.0],
+  ['Engenharia da Computação', EAD, '4 anos', 799.0],
+  ['Engenharia Elétrica', SEMI, '5 anos', 799.0],
+  ['Engenharia Mecânica', SEMI, '5 anos', 799.0],
+  ['Estudos Teóricos Psicanalíticos e Sociais', EAD, '4 anos', 799.0],
+  // Grupo 05 - R$859,00
+  ['Biomedicina', SEMI, '4 anos', 859.0],
+  ['Farmácia', SEMI, '4 anos', 859.0],
+  ['Fisioterapia', SEMI, '4 anos', 859.0],
+  ['Fonoaudiologia', SEMI, '4 anos', 859.0],
+  ['Nutrição', SEMI, '4 anos', 859.0],
+  ['Podologia', SEMI, '2,5 anos', 859.0],
+  ['Radiologia', SEMI, '3 anos', 859.0],
+  ['Terapia Ocupacional', SEMI, '4 anos', 859.0],
+];
+
+export const seedCourses = RAW_COURSES.map(([name, modality, duration, priceFull]) => ({
+  name,
+  level: 'graduacao',
+  modality,
+  duration,
+  priceFull,
+}));
