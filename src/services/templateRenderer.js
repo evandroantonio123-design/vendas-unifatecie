@@ -43,10 +43,14 @@ export function renderCourseText({ course, campaign }) {
       ? Math.round(campaign.discountPct)
       : null;
 
+  const installmentsPrefix = campaign.installments ? `${campaign.installments}x ` : '';
+
   if (priceFullFmt && discountedFmt) {
-    lines.push(`💰 Mensalidade: De: ${priceFullFmt} por apenas: ${discountedFmt} (${discountPct}% OFF)`);
+    lines.push(
+      `💰 Mensalidade: De: ${priceFullFmt} por apenas: ${installmentsPrefix}${discountedFmt} (${discountPct}% OFF)`
+    );
   } else if (priceFullFmt) {
-    lines.push(`💰 Mensalidade: ${priceFullFmt}`);
+    lines.push(`💰 Mensalidade: ${installmentsPrefix}${priceFullFmt}`);
   }
 
   if (discountPct !== null) {

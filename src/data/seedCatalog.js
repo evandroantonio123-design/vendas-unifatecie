@@ -23,6 +23,7 @@ const campanhaPos = {
   validUntil: '2026-06-30',
   active: true,
   discountPct: null,
+  installments: 12,
   enrollmentFeeFrom: null,
   enrollmentFeeTo: 29.9,
   firstPaymentNote: null,

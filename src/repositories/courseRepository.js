@@ -80,6 +80,7 @@ export async function createCampaign(input) {
     enrollmentFeeFrom: input.enrollmentFeeFrom ?? null,
     enrollmentFeeTo: input.enrollmentFeeTo ?? null,
     firstPaymentNote: input.firstPaymentNote || null,
+    installments: input.installments ?? null,
   };
   db.data.campaigns.push(campaign);
   await db.write();
@@ -100,6 +101,7 @@ export async function updateCampaign(id, input) {
       input.enrollmentFeeFrom !== undefined ? input.enrollmentFeeFrom : campaign.enrollmentFeeFrom,
     enrollmentFeeTo: input.enrollmentFeeTo !== undefined ? input.enrollmentFeeTo : campaign.enrollmentFeeTo,
     firstPaymentNote: input.firstPaymentNote !== undefined ? input.firstPaymentNote : campaign.firstPaymentNote,
+    installments: input.installments !== undefined ? input.installments : campaign.installments,
   });
   await db.write();
   return campaign;

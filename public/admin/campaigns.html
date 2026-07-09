@@ -40,6 +40,9 @@
         <label>Desconto (%)
           <input type="number" id="discountPct" placeholder="Ex: 70" />
         </label>
+        <label>Parcelas (opcional, ex: pós parcelado em 12x)
+          <input type="number" id="installments" placeholder="Ex: 12" />
+        </label>
         <label>Matrícula De (R$)
           <input type="number" step="0.01" id="enrollmentFeeFrom" placeholder="Ex: 49.90" />
         </label>
@@ -123,6 +126,7 @@
       document.getElementById('level').value = c.level;
       document.getElementById('validUntil').value = c.validUntil || '';
       document.getElementById('discountPct').value = c.discountPct ?? '';
+      document.getElementById('installments').value = c.installments ?? '';
       document.getElementById('enrollmentFeeFrom').value = c.enrollmentFeeFrom ?? '';
       document.getElementById('enrollmentFeeTo').value = c.enrollmentFeeTo ?? '';
       document.getElementById('firstPaymentNote').value = c.firstPaymentNote || '';
@@ -159,6 +163,7 @@
         level: document.getElementById('level').value,
         validUntil: document.getElementById('validUntil').value || null,
         discountPct: numOrNull(document.getElementById('discountPct').value),
+        installments: numOrNull(document.getElementById('installments').value),
         enrollmentFeeFrom: numOrNull(document.getElementById('enrollmentFeeFrom').value),
         enrollmentFeeTo: numOrNull(document.getElementById('enrollmentFeeTo').value),
         firstPaymentNote: document.getElementById('firstPaymentNote').value || null,
