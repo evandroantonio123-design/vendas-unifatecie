@@ -15,34 +15,38 @@ function formatDate(isoDate) {
   return `${day}/${month}/${year}`;
 }
 
-function computeDiscountPct(priceFrom, priceTo, storedPct) {
-  if (storedPct !== null && storedPct !== undefined && storedPct !== '') return Math.round(storedPct);
-  if (!priceFrom || priceTo === null || priceTo === undefined) return null;
-  const pct = 100 - (Number(priceTo) / Number(priceFrom)) * 100;
-  return Math.round(pct);
+function computeDiscountedPrice(priceFull, discountPct) {
+  if (priceFull === null || priceFull === undefined) return null;
+  if (discountPct === null || discountPct === undefined) return null;
+  return Number(priceFull) * (1 - Number(discountPct) / 100);
 }
 
 /**
- * Monta o texto padrao de venda a partir de curso + campanha + preco.
+ * Monta o texto padrao de venda a partir de curso + campanha.
+ * O curso guarda a mensalidade cheia; desconto, matricula e a nota da
+ * 1a mensalidade vem da campanha e valem pra todos os cursos dela.
  * Esta funcao e a UNICA fonte do texto final mostrado ao vendedor -
  * tanto a busca simples quanto o chat de IA passam por aqui, para
  * garantir que nenhum valor seja "inventado".
  */
-export function renderCourseText({ course, campaign, pricing }) {
+export function renderCourseText({ course, campaign }) {
   const lines = [];
 
   lines.push(`🎓 Curso de ${course.name} (${course.modality})`);
   lines.push(`🚀 Duração: ${course.duration}`);
 
-  const priceFromFmt = formatCurrency(pricing.priceFrom);
-  const priceToFmt = formatCurrency(pricing.priceTo);
-  const discountPct = computeDiscountPct(pricing.priceFrom, pricing.priceTo, pricing.discountPct);
+  const priceFullFmt = formatCurrency(course.priceFull);
+  const discountedPrice = computeDiscountedPrice(course.priceFull, campaign.discountPct);
+  const discountedFmt = formatCurrency(discountedPrice);
+  const discountPct =
+    campaign.discountPct !== null && campaign.discountPct !== undefined
+      ? Math.round(campaign.discountPct)
+      : null;
 
-  if (priceFromFmt && priceToFmt) {
-    const discountSuffix = discountPct !== null ? ` (${discountPct}% OFF)` : '';
-    lines.push(`💰 Mensalidade: De: ${priceFromFmt} por apenas: ${priceToFmt}${discountSuffix}`);
-  } else if (priceToFmt) {
-    lines.push(`💰 Mensalidade: ${priceToFmt}`);
+  if (priceFullFmt && discountedFmt) {
+    lines.push(`💰 Mensalidade: De: ${priceFullFmt} por apenas: ${discountedFmt} (${discountPct}% OFF)`);
+  } else if (priceFullFmt) {
+    lines.push(`💰 Mensalidade: ${priceFullFmt}`);
   }
 
   if (discountPct !== null) {
@@ -55,26 +59,21 @@ export function renderCourseText({ course, campaign, pricing }) {
     lines.push(campaign.bonusText);
   }
 
-  const feeFromFmt = formatCurrency(pricing.enrollmentFeeFrom);
-  const feeToFmt = formatCurrency(pricing.enrollmentFeeTo);
-  if (feeFromFmt && pricing.enrollmentFeeTo !== null && pricing.enrollmentFeeTo !== undefined) {
-    const feeToDisplay =
-      Number(pricing.enrollmentFeeTo) === 0 ? `${feeToFmt} (Grátis)` : feeToFmt;
+  const feeFromFmt = formatCurrency(campaign.enrollmentFeeFrom);
+  const feeToFmt = formatCurrency(campaign.enrollmentFeeTo);
+  if (feeFromFmt && campaign.enrollmentFeeTo !== null && campaign.enrollmentFeeTo !== undefined) {
+    const feeToDisplay = Number(campaign.enrollmentFeeTo) === 0 ? `${feeToFmt} (Grátis)` : feeToFmt;
     lines.push(`💳 Matrícula: De ${feeFromFmt} por ${feeToDisplay}`);
   } else if (feeToFmt) {
     lines.push(`💳 Matrícula: ${feeToFmt}`);
   }
 
-  if (pricing.firstPaymentNote) {
-    lines.push(`📅 ${pricing.firstPaymentNote}`);
+  if (campaign.firstPaymentNote) {
+    lines.push(`📅 ${campaign.firstPaymentNote}`);
   }
 
   if (campaign.validUntil) {
     lines.push(`🗓️ Promoção válida até: ${formatDate(campaign.validUntil)}`);
-  }
-
-  if (pricing.notes) {
-    lines.push(pricing.notes);
   }
 
   return lines.join('\n');

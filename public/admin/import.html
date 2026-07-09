@@ -51,13 +51,10 @@
         <label>Duração
           <input type="text" id="r-duration" required />
         </label>
-        <label>Mensalidade De (R$)
-          <input type="number" step="0.01" id="r-priceFrom" />
+        <label>Mensalidade cheia (R$)
+          <input type="number" step="0.01" id="r-priceFull" />
         </label>
-        <label>Mensalidade Por (R$)
-          <input type="number" step="0.01" id="r-priceTo" />
-        </label>
-        <label>Desconto (%)
+        <label>Desconto da campanha (%)
           <input type="number" id="r-discountPct" />
         </label>
         <label>Matrícula De (R$)
@@ -77,9 +74,6 @@
         </label>
         <label class="form-grid single" style="grid-column: 1 / -1;">Texto de bônus da campanha (opcional)
           <textarea id="r-bonusText" rows="2"></textarea>
-        </label>
-        <label class="form-grid single" style="grid-column: 1 / -1;">Observações extra (opcional)
-          <textarea id="r-notes" rows="2"></textarea>
         </label>
         <div style="grid-column: 1 / -1;">
           <button type="submit" class="btn-primary">✅ Salvar curso</button>
@@ -120,8 +114,7 @@
       document.getElementById('r-level').value = draft.level || 'graduacao';
       document.getElementById('r-modality').value = draft.modality || '';
       document.getElementById('r-duration').value = draft.duration || '';
-      document.getElementById('r-priceFrom').value = draft.priceFrom ?? '';
-      document.getElementById('r-priceTo').value = draft.priceTo ?? '';
+      document.getElementById('r-priceFull').value = draft.priceFull ?? '';
       document.getElementById('r-discountPct').value = draft.discountPct ?? '';
       document.getElementById('r-enrollmentFeeFrom').value = draft.enrollmentFeeFrom ?? '';
       document.getElementById('r-enrollmentFeeTo').value = draft.enrollmentFeeTo ?? '';
@@ -129,7 +122,6 @@
       document.getElementById('r-campaignName').value = draft.campaignName || '';
       document.getElementById('r-validUntil').value = draft.validUntil || '';
       document.getElementById('r-bonusText').value = draft.bonusText || '';
-      document.getElementById('r-notes').value = draft.notes || '';
     }
 
     document.getElementById('review-form').addEventListener('submit', async (e) => {
@@ -138,6 +130,11 @@
       msgEl.hidden = true;
       msgEl.className = 'error-msg';
       try {
+        const val = (id) => {
+          const v = document.getElementById(id).value;
+          return v === '' ? null : Number(v);
+        };
+
         const campaignName = document.getElementById('r-campaignName').value.trim();
         const existingCampaigns = await apiFetch('/admin/api/campaigns');
         let campaign = existingCampaigns.find(
@@ -150,36 +147,23 @@
               name: campaignName,
               validUntil: document.getElementById('r-validUntil').value || null,
               bonusText: document.getElementById('r-bonusText').value || null,
+              discountPct: val('r-discountPct'),
+              enrollmentFeeFrom: val('r-enrollmentFeeFrom'),
+              enrollmentFeeTo: val('r-enrollmentFeeTo'),
+              firstPaymentNote: document.getElementById('r-firstPaymentNote').value || null,
               active: true,
             }),
           });
         }
 
-        const course = await apiFetch('/admin/api/courses', {
+        await apiFetch('/admin/api/courses', {
           method: 'POST',
           body: JSON.stringify({
             name: document.getElementById('r-name').value,
             level: document.getElementById('r-level').value,
             modality: document.getElementById('r-modality').value,
             duration: document.getElementById('r-duration').value,
-          }),
-        });
-
-        const val = (id) => {
-          const v = document.getElementById(id).value;
-          return v === '' ? null : Number(v);
-        };
-
-        await apiFetch(`/admin/api/pricing/${course.id}/${campaign.id}`, {
-          method: 'PUT',
-          body: JSON.stringify({
-            priceFrom: val('r-priceFrom'),
-            priceTo: val('r-priceTo'),
-            discountPct: val('r-discountPct'),
-            enrollmentFeeFrom: val('r-enrollmentFeeFrom'),
-            enrollmentFeeTo: val('r-enrollmentFeeTo'),
-            firstPaymentNote: document.getElementById('r-firstPaymentNote').value || null,
-            notes: document.getElementById('r-notes').value || null,
+            priceFull: val('r-priceFull'),
           }),
         });
 

@@ -70,11 +70,11 @@ export async function chatWithSearch(userMessage, history = []) {
       if (block.type !== 'tool_use') continue;
       if (block.name === 'search_courses') {
         const matches = searchCourses(block.input.query || '');
-        const results = matches.map(({ course, campaign, pricing }) => ({
+        const results = matches.map(({ course, campaign }) => ({
           course: course.name,
           modality: course.modality,
           campaign: campaign.name,
-          renderedText: renderCourseText({ course, campaign, pricing }),
+          renderedText: renderCourseText({ course, campaign }),
         }));
         toolResults.push({
           type: 'tool_result',
@@ -109,16 +109,14 @@ const EXTRACT_TOOL = {
       level: { type: 'string', enum: ['graduacao', 'pos'] },
       modality: { type: 'string', description: 'Ex: Semi-presencial, EAD, Presencial' },
       duration: { type: 'string', description: 'Ex: 4 anos' },
-      priceFrom: { type: ['number', 'null'], description: 'Mensalidade cheia (De:)' },
-      priceTo: { type: ['number', 'null'], description: 'Mensalidade com desconto (Por:)' },
-      discountPct: { type: ['number', 'null'] },
-      enrollmentFeeFrom: { type: ['number', 'null'] },
-      enrollmentFeeTo: { type: ['number', 'null'] },
-      firstPaymentNote: { type: ['string', 'null'], description: 'Ex: 1ª mensalidade apenas para Agosto!' },
+      priceFull: { type: ['number', 'null'], description: 'Mensalidade cheia do curso (sem desconto)' },
       campaignName: { type: ['string', 'null'], description: 'Nome da campanha, ex: Campanha de Junho' },
+      discountPct: { type: ['number', 'null'], description: 'Percentual de desconto da campanha, ex: 70' },
+      enrollmentFeeFrom: { type: ['number', 'null'], description: 'Matrícula cheia da campanha' },
+      enrollmentFeeTo: { type: ['number', 'null'], description: 'Matrícula com desconto da campanha (0 se isenta)' },
+      firstPaymentNote: { type: ['string', 'null'], description: 'Ex: 1ª mensalidade apenas para Agosto!' },
       bonusText: { type: ['string', 'null'], description: 'Ex: linha de bonus tipo sorteio de carro' },
       validUntil: { type: ['string', 'null'], description: 'Data no formato YYYY-MM-DD, se mencionada' },
-      notes: { type: ['string', 'null'] },
     },
     required: ['name'],
   },

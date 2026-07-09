@@ -5,18 +5,13 @@ import { extractCourseFromText } from '../services/claudeClient.js';
 import {
   findAdminByEmail,
   listCourses,
-  getCourse,
   createCourse,
   updateCourse,
   deleteCourse,
   listCampaigns,
-  getCampaign,
   createCampaign,
   updateCampaign,
   deleteCampaign,
-  listPricingForCourse,
-  upsertPricing,
-  deletePricing,
 } from '../repositories/courseRepository.js';
 
 export const adminRouter = Router();
@@ -45,21 +40,18 @@ adminRouter.get('/api/me', requireAdmin, (req, res) => {
 adminRouter.use('/api', requireAdmin);
 
 // ---- courses ----
+// O curso guarda só a mensalidade cheia (priceFull).
 
 adminRouter.get('/api/courses', (req, res) => {
-  const courses = listCourses().map((course) => ({
-    ...course,
-    pricing: listPricingForCourse(course.id),
-  }));
-  res.json(courses);
+  res.json(listCourses());
 });
 
 adminRouter.post('/api/courses', async (req, res) => {
-  const { name, level, modality, duration } = req.body || {};
+  const { name, level, modality, duration, priceFull } = req.body || {};
   if (!name || !level || !modality || !duration) {
     return res.status(400).json({ error: 'name, level, modality e duration são obrigatórios.' });
   }
-  const course = await createCourse({ name, level, modality, duration });
+  const course = await createCourse({ name, level, modality, duration, priceFull });
   res.status(201).json(course);
 });
 
@@ -75,6 +67,7 @@ adminRouter.delete('/api/courses/:id', async (req, res) => {
 });
 
 // ---- campaigns ----
+// Desconto, matrícula e nota da 1ª mensalidade valem pra todos os cursos da campanha.
 
 adminRouter.get('/api/campaigns', (req, res) => {
   res.json(listCampaigns());
@@ -95,22 +88,6 @@ adminRouter.put('/api/campaigns/:id', async (req, res) => {
 
 adminRouter.delete('/api/campaigns/:id', async (req, res) => {
   await deleteCampaign(Number(req.params.id));
-  res.json({ ok: true });
-});
-
-// ---- pricing ----
-
-adminRouter.put('/api/pricing/:courseId/:campaignId', async (req, res) => {
-  const courseId = Number(req.params.courseId);
-  const campaignId = Number(req.params.campaignId);
-  if (!getCourse(courseId)) return res.status(404).json({ error: 'Curso não encontrado.' });
-  if (!getCampaign(campaignId)) return res.status(404).json({ error: 'Campanha não encontrada.' });
-  const pricing = await upsertPricing(courseId, campaignId, req.body || {});
-  res.json(pricing);
-});
-
-adminRouter.delete('/api/pricing/:id', async (req, res) => {
-  await deletePricing(Number(req.params.id));
   res.json({ ok: true });
 });
 

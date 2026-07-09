@@ -62,6 +62,6 @@ Alguns planos de entrada da HostGator só suportam PHP. Nesse caso, o mesmo proj
 ## Uso do admin (cadastro de cursos)
 
 1. Entre em `/admin/login.html` com o e-mail/senha configurados.
-2. Em **Campanhas**, cadastre a campanha vigente (nome, validade, texto de bônus se houver).
-3. Em **Cursos**, cadastre o curso e depois clique em **Preços** para definir os valores daquele curso na campanha.
+2. Em **Campanhas**, cadastre a campanha vigente: nome, validade, desconto (%), matrícula (de/por) e a nota da 1ª mensalidade. Esses valores se aplicam automaticamente a **todos** os cursos enquanto a campanha estiver ativa.
+3. Em **Cursos**, cadastre o curso com a mensalidade cheia (sem desconto) — o valor com desconto é calculado sozinho a partir da campanha ativa.
 4. Para acelerar o cadastro de muitos cursos a partir dos PDFs de regulamento, use **Importar (IA)**: cole o texto do regulamento, clique em "Extrair dados com IA", revise/corrija os campos (a IA deixa em branco o que não achou explícito no texto — nunca inventa número) e clique em "Salvar curso".

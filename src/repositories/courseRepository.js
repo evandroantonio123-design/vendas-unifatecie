@@ -8,6 +8,8 @@ function normalize(str) {
 }
 
 // ---- courses ----
+// O curso guarda só a mensalidade cheia (priceFull). Desconto, matrícula e
+// texto da 1ª mensalidade vivem na campanha e se aplicam a todos os cursos dela.
 
 export function listCourses() {
   return [...db.data.courses].sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
@@ -25,6 +27,7 @@ export async function createCourse(input) {
     level: input.level,
     modality: input.modality,
     duration: input.duration,
+    priceFull: input.priceFull ?? null,
     createdAt: now,
     updatedAt: now,
   };
@@ -41,6 +44,7 @@ export async function updateCourse(id, input) {
     level: input.level ?? course.level,
     modality: input.modality ?? course.modality,
     duration: input.duration ?? course.duration,
+    priceFull: input.priceFull !== undefined ? input.priceFull : course.priceFull,
     updatedAt: new Date().toISOString(),
   });
   await db.write();
@@ -49,14 +53,15 @@ export async function updateCourse(id, input) {
 
 export async function deleteCourse(id) {
   db.data.courses = db.data.courses.filter((c) => c.id !== id);
-  db.data.coursePricing = db.data.coursePricing.filter((p) => p.courseId !== id);
   await db.write();
 }
 
 // ---- campaigns ----
+// Desconto, matrícula e nota da 1ª mensalidade ficam aqui e valem para
+// todos os cursos automaticamente enquanto a campanha estiver ativa.
 
 export function listCampaigns() {
-  return [...db.data.campaigns].sort((a, b) => (b.id - a.id));
+  return [...db.data.campaigns].sort((a, b) => b.id - a.id);
 }
 
 export function getCampaign(id) {
@@ -70,6 +75,10 @@ export async function createCampaign(input) {
     validUntil: input.validUntil || null,
     bonusText: input.bonusText || null,
     active: input.active !== undefined ? !!input.active : true,
+    discountPct: input.discountPct ?? null,
+    enrollmentFeeFrom: input.enrollmentFeeFrom ?? null,
+    enrollmentFeeTo: input.enrollmentFeeTo ?? null,
+    firstPaymentNote: input.firstPaymentNote || null,
   };
   db.data.campaigns.push(campaign);
   await db.write();
@@ -84,6 +93,11 @@ export async function updateCampaign(id, input) {
     validUntil: input.validUntil ?? campaign.validUntil,
     bonusText: input.bonusText ?? campaign.bonusText,
     active: input.active !== undefined ? !!input.active : campaign.active,
+    discountPct: input.discountPct !== undefined ? input.discountPct : campaign.discountPct,
+    enrollmentFeeFrom:
+      input.enrollmentFeeFrom !== undefined ? input.enrollmentFeeFrom : campaign.enrollmentFeeFrom,
+    enrollmentFeeTo: input.enrollmentFeeTo !== undefined ? input.enrollmentFeeTo : campaign.enrollmentFeeTo,
+    firstPaymentNote: input.firstPaymentNote !== undefined ? input.firstPaymentNote : campaign.firstPaymentNote,
   });
   await db.write();
   return campaign;
@@ -91,79 +105,34 @@ export async function updateCampaign(id, input) {
 
 export async function deleteCampaign(id) {
   db.data.campaigns = db.data.campaigns.filter((c) => c.id !== id);
-  db.data.coursePricing = db.data.coursePricing.filter((p) => p.campaignId !== id);
   await db.write();
 }
 
-// ---- pricing (course x campaign) ----
-
-export function getPricing(courseId, campaignId) {
-  return (
-    db.data.coursePricing.find((p) => p.courseId === courseId && p.campaignId === campaignId) ||
-    null
-  );
-}
-
-export function getPricingById(id) {
-  return db.data.coursePricing.find((p) => p.id === id) || null;
-}
-
-export function listPricingForCourse(courseId) {
-  return db.data.coursePricing.filter((p) => p.courseId === courseId);
-}
-
-export async function upsertPricing(courseId, campaignId, input) {
-  let pricing = getPricing(courseId, campaignId);
-  const fields = {
-    priceFrom: input.priceFrom ?? null,
-    priceTo: input.priceTo ?? null,
-    discountPct: input.discountPct ?? null,
-    enrollmentFeeFrom: input.enrollmentFeeFrom ?? null,
-    enrollmentFeeTo: input.enrollmentFeeTo ?? null,
-    firstPaymentNote: input.firstPaymentNote ?? null,
-    notes: input.notes ?? null,
-  };
-  if (pricing) {
-    Object.assign(pricing, fields);
-  } else {
-    pricing = { id: nextId('coursePricing'), courseId, campaignId, ...fields };
-    db.data.coursePricing.push(pricing);
-  }
-  await db.write();
-  return pricing;
-}
-
-export async function deletePricing(id) {
-  db.data.coursePricing = db.data.coursePricing.filter((p) => p.id !== id);
-  await db.write();
-}
-
-// ---- joined lookups used by the vendor tool + chat ----
+// ---- joined lookups usados pela busca simples + chat ----
 
 export function getJoined(courseId, campaignId) {
   const course = getCourse(courseId);
   const campaign = getCampaign(campaignId);
-  const pricing = getPricing(courseId, campaignId);
-  if (!course || !campaign || !pricing) return null;
-  return { course, campaign, pricing };
+  if (!course || !campaign) return null;
+  return { course, campaign };
 }
 
 /**
- * Busca cursos com preco cadastrado em campanha ativa.
+ * Busca cursos em campanhas ativas. Todo curso com mensalidade cheia
+ * cadastrada aparece automaticamente em toda campanha ativa.
  * Aceita termos parciais/informais (acento-insensitive).
  */
 export function search(query, { limit = 20 } = {}) {
   const q = normalize(query).trim();
-  const activeCampaignIds = new Set(db.data.campaigns.filter((c) => c.active).map((c) => c.id));
+  const activeCampaigns = db.data.campaigns.filter((c) => c.active);
+  const courses = db.data.courses.filter((c) => c.priceFull !== null && c.priceFull !== undefined);
 
-  const rows = db.data.coursePricing
-    .filter((p) => activeCampaignIds.has(p.campaignId))
-    .map((p) => {
-      const course = getCourse(p.courseId);
-      const campaign = getCampaign(p.campaignId);
-      return course && campaign ? { course, campaign, pricing: p } : null;
-    })
-    .filter(Boolean);
+  const rows = [];
+  for (const campaign of activeCampaigns) {
+    for (const course of courses) {
+      rows.push({ course, campaign });
+    }
+  }
 
   if (!q) return rows.slice(0, limit);
 
