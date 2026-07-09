@@ -97,6 +97,57 @@ body {
   padding: 0 16px;
 }
 
+.voucher-panel {
+  background: #fff8e1;
+  border: 2px dashed #f0b429;
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+
+.voucher-panel h2 {
+  margin: 0 0 10px;
+  font-size: 14px;
+  color: #92610a;
+}
+
+.voucher-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.voucher-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.voucher-name {
+  flex: 1;
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+.voucher-code {
+  font-family: 'Courier New', monospace;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--color-primary);
+}
+
+.voucher-copy-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 2px 4px;
+}
+
 .search-panel label {
   display: block;
   font-size: 13px;

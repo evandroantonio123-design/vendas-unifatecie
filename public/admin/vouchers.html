@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Links de Matrícula — Admin UNIFATECIE</title>
+<title>Vouchers — Admin UNIFATECIE</title>
 <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
   <header class="topbar">
-    <h1>🔗 Admin — Links de Matrícula</h1>
+    <h1>🎟️ Admin — Vouchers</h1>
     <nav style="display:flex; gap:16px; align-items:center;">
       <a class="admin-link" href="/admin/courses.html">Cursos</a>
       <a class="admin-link" href="/admin/campaigns.html">Campanhas</a>
@@ -21,20 +21,20 @@
 
   <main class="admin-container">
     <div class="card">
-      <h2 style="margin-top:0;" id="form-title">Novo link</h2>
+      <h2 style="margin-top:0;" id="form-title">Novo voucher</h2>
       <p style="color:#6b7280; font-size:13px; margin-top:-8px;">
-        Esses links aparecem no menu "Links de Matrícula" da tela do vendedor.
+        Esses códigos aparecem sempre visíveis (sem precisar clicar em nada) no topo da tela do vendedor. Atualize aqui todo mês.
       </p>
-      <form id="link-form" class="form-grid">
-        <input type="hidden" id="link-id" />
-        <label>Nome (como aparece no menu)
-          <input type="text" id="name" placeholder="Ex: Pós-Graduação" required />
+      <form id="voucher-form" class="form-grid">
+        <input type="hidden" id="voucher-id" />
+        <label>Nome (ex: Graduação, Pós-Graduação)
+          <input type="text" id="name" placeholder="Ex: Graduação" required />
         </label>
-        <label>URL
-          <input type="text" id="url" placeholder="https://..." required />
+        <label>Código do voucher
+          <input type="text" id="code" placeholder="Ex: 1GANHE4" required />
         </label>
         <label style="flex-direction:row; align-items:center; gap:8px;">
-          <input type="checkbox" id="active" checked style="width:auto;" /> Ativo (aparece no menu)
+          <input type="checkbox" id="active" checked style="width:auto;" /> Ativo (aparece no card)
         </label>
         <div style="grid-column: 1 / -1; display:flex; gap:10px;">
           <button type="submit" class="btn-primary">Salvar</button>
@@ -45,13 +45,13 @@
     </div>
 
     <div class="card">
-      <h2 style="margin-top:0;">Links cadastrados</h2>
+      <h2 style="margin-top:0;">Vouchers cadastrados</h2>
       <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>Nome</th><th>URL</th><th>Status</th><th></th></tr>
+          <tr><th>Nome</th><th>Código</th><th>Status</th><th></th></tr>
         </thead>
-        <tbody id="links-tbody"></tbody>
+        <tbody id="vouchers-tbody"></tbody>
       </table>
       </div>
     </div>
@@ -59,24 +59,22 @@
 
   <script src="/js/admin.js"></script>
   <script>
-    let links = [];
+    let vouchers = [];
 
-    async function loadLinks() {
-      links = await apiFetch('/admin/api/links');
-      const tbody = document.getElementById('links-tbody');
+    async function loadVouchers() {
+      vouchers = await apiFetch('/admin/api/vouchers');
+      const tbody = document.getElementById('vouchers-tbody');
       tbody.innerHTML = '';
-      for (const l of links) {
+      for (const v of vouchers) {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${l.name}</td>
-          <td style="max-width:280px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
-            <a href="${l.url}" target="_blank" rel="noopener noreferrer">${l.url}</a>
-          </td>
-          <td><span class="tag">${l.active ? 'Ativo' : 'Inativo'}</span></td>
+          <td>${v.name}</td>
+          <td><code>${v.code}</code></td>
+          <td><span class="tag">${v.active ? 'Ativo' : 'Inativo'}</span></td>
           <td>
-            <button class="btn-link" data-edit="${l.id}">Editar</button>
+            <button class="btn-link" data-edit="${v.id}">Editar</button>
             &nbsp;
-            <button class="btn-link btn-danger" data-delete="${l.id}">Excluir</button>
+            <button class="btn-link btn-danger" data-delete="${v.id}">Excluir</button>
           </td>`;
         tbody.appendChild(tr);
       }
@@ -84,56 +82,56 @@
         btn.addEventListener('click', () => startEdit(Number(btn.dataset.edit)))
       );
       tbody.querySelectorAll('[data-delete]').forEach((btn) =>
-        btn.addEventListener('click', () => removeLink(Number(btn.dataset.delete)))
+        btn.addEventListener('click', () => removeVoucher(Number(btn.dataset.delete)))
       );
     }
 
     function startEdit(id) {
-      const l = links.find((x) => x.id === id);
-      if (!l) return;
-      document.getElementById('form-title').textContent = `Editando: ${l.name}`;
-      document.getElementById('link-id').value = l.id;
-      document.getElementById('name').value = l.name;
-      document.getElementById('url').value = l.url;
-      document.getElementById('active').checked = !!l.active;
+      const v = vouchers.find((x) => x.id === id);
+      if (!v) return;
+      document.getElementById('form-title').textContent = `Editando: ${v.name}`;
+      document.getElementById('voucher-id').value = v.id;
+      document.getElementById('name').value = v.name;
+      document.getElementById('code').value = v.code;
+      document.getElementById('active').checked = !!v.active;
       document.getElementById('cancel-edit').hidden = false;
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function resetForm() {
-      document.getElementById('form-title').textContent = 'Novo link';
-      document.getElementById('link-form').reset();
-      document.getElementById('link-id').value = '';
+      document.getElementById('form-title').textContent = 'Novo voucher';
+      document.getElementById('voucher-form').reset();
+      document.getElementById('voucher-id').value = '';
       document.getElementById('active').checked = true;
       document.getElementById('cancel-edit').hidden = true;
     }
 
-    async function removeLink(id) {
-      if (!confirm('Excluir este link?')) return;
-      await apiFetch(`/admin/api/links/${id}`, { method: 'DELETE' });
-      await loadLinks();
+    async function removeVoucher(id) {
+      if (!confirm('Excluir este voucher?')) return;
+      await apiFetch(`/admin/api/vouchers/${id}`, { method: 'DELETE' });
+      await loadVouchers();
     }
 
     document.getElementById('cancel-edit').addEventListener('click', resetForm);
 
-    document.getElementById('link-form').addEventListener('submit', async (e) => {
+    document.getElementById('voucher-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const msgEl = document.getElementById('form-msg');
       msgEl.hidden = true;
-      const id = document.getElementById('link-id').value;
+      const id = document.getElementById('voucher-id').value;
       const payload = {
         name: document.getElementById('name').value,
-        url: document.getElementById('url').value,
+        code: document.getElementById('code').value,
         active: document.getElementById('active').checked,
       };
       try {
         if (id) {
-          await apiFetch(`/admin/api/links/${id}`, { method: 'PUT', body: JSON.stringify(payload) });
+          await apiFetch(`/admin/api/vouchers/${id}`, { method: 'PUT', body: JSON.stringify(payload) });
         } else {
-          await apiFetch('/admin/api/links', { method: 'POST', body: JSON.stringify(payload) });
+          await apiFetch('/admin/api/vouchers', { method: 'POST', body: JSON.stringify(payload) });
         }
         resetForm();
-        await loadLinks();
+        await loadVouchers();
       } catch (err) {
         msgEl.textContent = err.message;
         msgEl.hidden = false;
@@ -143,7 +141,7 @@
     (async () => {
       if (!(await requireAuth())) return;
       wireLogout('logout-btn');
-      await loadLinks();
+      await loadVouchers();
     })();
   </script>
 </body>

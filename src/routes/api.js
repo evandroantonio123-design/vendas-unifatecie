@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { search as searchCourses, getJoined } from '../repositories/courseRepository.js';
 import { listActiveLinks } from '../repositories/linkRepository.js';
+import { listActiveVouchers } from '../repositories/voucherRepository.js';
 import { renderCourseText } from '../services/templateRenderer.js';
 import { chatWithSearch } from '../services/claudeClient.js';
 
@@ -9,6 +10,11 @@ export const apiRouter = Router();
 // Links oficiais de matrícula (menu "Links de Matrícula" da tela do vendedor).
 apiRouter.get('/links', (req, res) => {
   res.json(listActiveLinks());
+});
+
+// Vouchers de isenção de matrícula do mês (card sempre visível pro vendedor).
+apiRouter.get('/vouchers', (req, res) => {
+  res.json(listActiveVouchers());
 });
 
 // Busca simples e determinística - ferramenta principal do dia a dia do vendedor.

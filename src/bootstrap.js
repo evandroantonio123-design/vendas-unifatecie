@@ -1,8 +1,10 @@
 import { db } from './db.js';
 import { createCourse, createCampaign } from './repositories/courseRepository.js';
 import { createLink } from './repositories/linkRepository.js';
+import { createVoucher } from './repositories/voucherRepository.js';
 import { seedCampaigns, seedCourses } from './data/seedCatalog.js';
 import { seedLinks } from './data/enrollmentLinks.js';
+import { seedVouchers } from './data/vouchers.js';
 
 /**
  * Recarrega o catálogo base sempre que o banco estiver vazio - inclusive
@@ -26,5 +28,12 @@ export async function seedCatalogIfEmpty() {
       await createLink(link);
     }
     console.log(`Links de matrícula carregados: ${seedLinks.length}.`);
+  }
+
+  if (db.data.vouchers.length === 0) {
+    for (const voucher of seedVouchers) {
+      await createVoucher(voucher);
+    }
+    console.log(`Vouchers carregados: ${seedVouchers.length}.`);
   }
 }

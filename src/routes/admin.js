@@ -14,6 +14,12 @@ import {
   deleteCampaign,
 } from '../repositories/courseRepository.js';
 import { listLinks, createLink, updateLink, deleteLink } from '../repositories/linkRepository.js';
+import {
+  listVouchers,
+  createVoucher,
+  updateVoucher,
+  deleteVoucher,
+} from '../repositories/voucherRepository.js';
 
 export const adminRouter = Router();
 
@@ -113,6 +119,30 @@ adminRouter.put('/api/links/:id', async (req, res) => {
 
 adminRouter.delete('/api/links/:id', async (req, res) => {
   await deleteLink(Number(req.params.id));
+  res.json({ ok: true });
+});
+
+// ---- vouchers de isenção de matrícula ----
+
+adminRouter.get('/api/vouchers', (req, res) => {
+  res.json(listVouchers());
+});
+
+adminRouter.post('/api/vouchers', async (req, res) => {
+  const { name, code } = req.body || {};
+  if (!name || !code) return res.status(400).json({ error: 'name e code são obrigatórios.' });
+  const voucher = await createVoucher(req.body);
+  res.status(201).json(voucher);
+});
+
+adminRouter.put('/api/vouchers/:id', async (req, res) => {
+  const voucher = await updateVoucher(Number(req.params.id), req.body || {});
+  if (!voucher) return res.status(404).json({ error: 'Voucher não encontrado.' });
+  res.json(voucher);
+});
+
+adminRouter.delete('/api/vouchers/:id', async (req, res) => {
+  await deleteVoucher(Number(req.params.id));
   res.json({ ok: true });
 });
 

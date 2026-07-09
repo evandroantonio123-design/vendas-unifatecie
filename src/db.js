@@ -14,6 +14,7 @@ const defaultData = {
   campaigns: [],
   adminUsers: [],
   enrollmentLinks: [],
+  vouchers: [],
 };
 
 export const db = await JSONFilePreset(dataFile, defaultData);
