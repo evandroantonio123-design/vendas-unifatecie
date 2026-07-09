@@ -4,6 +4,8 @@ function normalize(str) {
   return String(str || '')
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '')
+    .replace(/ª/g, 'a') // indicadores ordinais (2ª, 1º) não são removidos pelo NFD acima
+    .replace(/º/g, 'o')
     .toLowerCase();
 }
 
@@ -146,9 +148,17 @@ export function search(query, { limit = 20 } = {}) {
 
   if (!q) return rows.slice(0, limit);
 
-  const matches = rows.filter((r) =>
-    normalize(`${r.course.name} ${r.course.modality} ${r.course.level} ${r.campaign.name}`).includes(q)
-  );
+  // Cada palavra da busca precisa aparecer em algum lugar do curso/campanha
+  // (não precisa ser uma frase contínua) - ex: "matematica 2a graduacao"
+  // acha "Matemática (2ª Graduação)" mesmo com o parêntese no meio.
+  const tokens = q.split(/\s+/).filter(Boolean);
+
+  const matches = rows.filter((r) => {
+    const haystack = normalize(
+      `${r.course.name} ${r.course.modality} ${r.course.level} ${r.campaign.name}`
+    );
+    return tokens.every((t) => haystack.includes(t));
+  });
 
   matches.sort((a, b) => {
     const an = normalize(a.course.name);
