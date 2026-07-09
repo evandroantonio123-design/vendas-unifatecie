@@ -13,6 +13,7 @@ import {
   updateCampaign,
   deleteCampaign,
 } from '../repositories/courseRepository.js';
+import { listLinks, createLink, updateLink, deleteLink } from '../repositories/linkRepository.js';
 
 export const adminRouter = Router();
 
@@ -88,6 +89,30 @@ adminRouter.put('/api/campaigns/:id', async (req, res) => {
 
 adminRouter.delete('/api/campaigns/:id', async (req, res) => {
   await deleteCampaign(Number(req.params.id));
+  res.json({ ok: true });
+});
+
+// ---- links de matrícula ----
+
+adminRouter.get('/api/links', (req, res) => {
+  res.json(listLinks());
+});
+
+adminRouter.post('/api/links', async (req, res) => {
+  const { name, url } = req.body || {};
+  if (!name || !url) return res.status(400).json({ error: 'name e url são obrigatórios.' });
+  const link = await createLink(req.body);
+  res.status(201).json(link);
+});
+
+adminRouter.put('/api/links/:id', async (req, res) => {
+  const link = await updateLink(Number(req.params.id), req.body || {});
+  if (!link) return res.status(404).json({ error: 'Link não encontrado.' });
+  res.json(link);
+});
+
+adminRouter.delete('/api/links/:id', async (req, res) => {
+  await deleteLink(Number(req.params.id));
   res.json({ ok: true });
 });
 

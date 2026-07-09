@@ -9,7 +9,13 @@
 <body>
   <header class="topbar">
     <h1>🎓 Central de Vendas — UNIFATECIE</h1>
-    <a class="admin-link" href="/admin/login.html">Área do admin</a>
+    <nav class="topbar-nav">
+      <div class="links-menu">
+        <button id="links-menu-btn" class="admin-link links-menu-btn" type="button">🔗 Links de Matrícula ▾</button>
+        <div id="links-menu-dropdown" class="links-menu-dropdown" hidden></div>
+      </div>
+      <a class="admin-link" href="/admin/login.html">Área do admin</a>
+    </nav>
   </header>
 
   <main class="container">
@@ -49,5 +55,6 @@
 
   <script src="/js/search.js"></script>
   <script src="/js/chat.js"></script>
+  <script src="/js/links.js"></script>
 </body>
 </html>

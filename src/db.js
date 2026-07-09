@@ -12,8 +12,8 @@ fs.mkdirSync(dataDir, { recursive: true });
 const defaultData = {
   courses: [],
   campaigns: [],
-  coursePricing: [],
   adminUsers: [],
+  enrollmentLinks: [],
 };
 
 export const db = await JSONFilePreset(dataFile, defaultData);
