@@ -4,7 +4,9 @@ import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const dataDir = path.join(__dirname, '..', 'data');
+// Em produção, DATA_DIR aponta pro disco permanente montado no Render
+// (ex: /var/data). Sem essa variável, usa a pasta local do projeto (dev).
+const dataDir = process.env.DATA_DIR || path.join(__dirname, '..', 'data');
 const dataFile = path.join(dataDir, 'app.json');
 
 fs.mkdirSync(dataDir, { recursive: true });
