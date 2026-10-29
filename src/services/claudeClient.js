@@ -130,7 +130,7 @@ const EXTRACT_TOOL = {
     type: 'object',
     properties: {
       name: { type: 'string', description: 'Nome do curso' },
-      level: { type: 'string', enum: ['graduacao', 'pos'] },
+      level: { type: 'string', enum: ['graduacao', 'graduacao_saude', 'pos', 'segunda_graduacao'] },
       modality: { type: 'string', description: 'Ex: Semi-presencial, EAD, Presencial' },
       duration: { type: 'string', description: 'Ex: 4 anos' },
       priceFull: { type: ['number', 'null'], description: 'Mensalidade cheia do curso (sem desconto)' },

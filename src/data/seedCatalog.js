@@ -120,7 +120,11 @@ const RAW_COURSES = [
   ['Engenharia Elétrica', SEMI, '5 anos', 799.0],
   ['Engenharia Mecânica', SEMI, '5 anos', 799.0],
   ['Estudos Teóricos Psicanalíticos e Sociais', EAD, '4 anos', 799.0],
-  // Grupo 05 - R$859,00
+];
+
+// Grupo 05 - R$859,00 - cursos de saúde, nível à parte porque agora têm
+// desconto diferente dos demais cursos de graduação (campanha própria).
+const RAW_COURSES_SAUDE = [
   ['Biomedicina', SEMI, '4 anos', 859.0],
   ['Farmácia', SEMI, '4 anos', 859.0],
   ['Fisioterapia', SEMI, '4 anos', 859.0],
@@ -134,6 +138,14 @@ const RAW_COURSES = [
 const seedCoursesGraduacao = RAW_COURSES.map(([name, modality, duration, priceFull]) => ({
   name,
   level: 'graduacao',
+  modality,
+  duration,
+  priceFull,
+}));
+
+const seedCoursesGraduacaoSaude = RAW_COURSES_SAUDE.map(([name, modality, duration, priceFull]) => ({
+  name,
+  level: 'graduacao_saude',
   modality,
   duration,
   priceFull,
@@ -314,4 +326,9 @@ const seedCoursesPos = RAW_COURSES_POS.map(([name, duration, priceFull]) => ({
   priceFull,
 }));
 
-export const seedCourses = [...seedCoursesGraduacao, ...seedCoursesPos, ...seedCoursesSegundaGraduacao];
+export const seedCourses = [
+  ...seedCoursesGraduacao,
+  ...seedCoursesGraduacaoSaude,
+  ...seedCoursesPos,
+  ...seedCoursesSegundaGraduacao,
+];

@@ -33,6 +33,7 @@
         <label>Nível
           <select id="level" required>
             <option value="graduacao">Graduação</option>
+            <option value="graduacao_saude">Graduação Saúde</option>
             <option value="pos">Pós-graduação</option>
             <option value="segunda_graduacao">2ª Graduação (Portador de Diploma)</option>
           </select>
@@ -70,7 +71,7 @@
   <script src="/js/admin.js"></script>
   <script>
     let courses = [];
-    const levelLabel = { graduacao: 'Graduação', pos: 'Pós-graduação', segunda_graduacao: '2ª Graduação' };
+    const levelLabel = { graduacao: 'Graduação', graduacao_saude: 'Graduação Saúde', pos: 'Pós-graduação', segunda_graduacao: '2ª Graduação' };
     const currencyFmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
     async function loadAll() {
